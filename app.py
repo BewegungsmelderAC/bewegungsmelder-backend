@@ -16,11 +16,13 @@ import logging
 # third party imports
 from flask_cors import CORS
 from flask_api import FlaskAPI
+from flask_sqlalchemy import SQLAlchemy
 from prometheus_client import Counter
 # custom imports
 import config
 
 http_error_metric = Counter('http_errors_total', 'HTTP Errors', ['type'])
+db = SQLAlchemy()
 
 
 def create_app():
@@ -37,6 +39,10 @@ def create_app():
                    static_folder=config.STATIC_FOLDER,
                    template_folder=config.TEMPLATE_FOLDER,
                    instance_relative_config=True)
+    app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_URI
+    logging.info("Connecting to db at {}".format(config.DATABASE_URI))
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.init_app(app)
     logging.info('Flask application started.')
     logging.info('Validating configuration...')
     try:

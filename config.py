@@ -20,7 +20,7 @@ WP_DATABASE_HOST = os.environ['BM_WP_DATABASE_HOST']
 WP_DATABASE_USER = os.environ['BM_WP_DATABASE_USER']
 WP_DATABASE_PASSWORD = os.environ['BM_WP_DATABASE_PASSWORD']
 WP_DATABASE_NAME = os.environ['BM_WP_DATABASE_NAME']
-
+DATABASE_URI = "mysql://{}:{}@{}/{}".format(WP_DATABASE_USER, WP_DATABASE_PASSWORD, WP_DATABASE_HOST, WP_DATABASE_NAME)
 
 # -------------------------------------------------------------------------------
 # 2. General settings
