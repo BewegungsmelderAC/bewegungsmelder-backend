@@ -11,7 +11,7 @@ from datetime import date
 from datetime import datetime
 
 from app_config import db
-
+from backend.service.group_service import group_to_compact_dict
 
 def create_filter(count: int = 30, page: int = 1, from_datetime: datetime = datetime.now()):
     # This sets defaults for values not set in the request
@@ -24,10 +24,7 @@ def event_to_dict(event: Event) -> dict:
                 "id": event.location_id,
                 "address": event.location.address,
                 "town": event.location.town} if event.location is not None else {}
-    group = {
-        "name": event.group.name,
-        "id": event.group_id,
-    } if event.group is not None else {}
+    group = group_to_compact_dict(event.group) if event.group is not None else {}
     return {
         "name": event.name,
         "id": event.id,
