@@ -3,8 +3,7 @@
 # created by Alwin Ebermann (alwin@alwin.net.au)
 
 from sqlalchemy import Column, String, Integer
-from sqlalchemy.orm import relationship
-from app import db
+from app_config import db
 
 
 class Group(db.Model):

@@ -1,0 +1,185 @@
+swagger: "2.0"
+info:
+  description: "Dies ist die REST-API für den Bewegungsmelder"
+  version: "0.0.1"
+  title: "Bewegungsmelder"
+  contact:
+    email: "team@bewegungsmelder-aachen.de"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "127.0.0.1:8080"
+basePath: "/api"
+tags:
+- name: "Home"
+  description: "Website des Bewegungsmelders"
+  externalDocs:
+    description: "Zur Startseite geht's hier lang"
+    url: "https://bewegungsmelder-aachen.de"
+schemes:
+- "http"
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /event/by-day/{date}:
+    get:
+      tags:
+      - "event"
+      summary: "Finds events by day"
+      operationId: "backend.api.event_controller.get_day_events"
+      parameters:
+      - name: "date"
+        in: "path"
+        description: "The date for which events should be shown, format according to RFC3339 - YYYY-MM-DD"
+        required: true
+        type: "string"
+        format: "date"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Event"
+        400:
+          description: "Invalid date"
+        404:
+          description: "No events found for that day"
+  /event:
+    get:
+      tags:
+        - "event"
+      summary: "Finds events according to filter"
+      operationId: "backend.api.event_controller.get_filtered_events"
+      parameters:
+        - name: "from_datetime"
+          in: "query"
+          description: "Events happening at this time or later, format according to RFC3339, for example 2017-07-21T17:32:28Z, defaults to current date and time"
+          required: false
+          type: "string"
+          format: "date-time"
+        - name: "page"
+          in: "query"
+          description: "Page number if the results are more than the number of entries per page"
+          required: false
+          type: "integer"
+          format: "int32"
+          minimum: 0
+          default: 1
+        - name: "per_page"
+          in: "query"
+          description: "Number of events per page"
+          required: false
+          type: "integer"
+          format: "int32"
+          minimum: 1
+          default: 30
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Event"
+        400:
+          description: "Invalid datetime"
+        404:
+          description: "No events found for these filters"
+  /event/{event_id}:
+    get:
+      tags:
+      - "event"
+      summary: "Find event by ID"
+      description: "Returns a single event"
+      operationId: "backend.api.event_controller.get_single_event"
+      parameters:
+      - name: "event_id"
+        in: "path"
+        description: "ID of event to return"
+        required: true
+        type: "integer"
+        format: "int32"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Event"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Event not found"
+
+definitions:
+  Group:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+      description:
+        type: "string"
+    xml:
+      name: "Group"
+  Location:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+      address:
+        type: "string"
+      town:
+        type: "string"
+    xml:
+      name: "Location"
+  Tag:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+    xml:
+      name: "Tag"
+  Event:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      group:
+        $ref: "#/definitions/Group"
+      name:
+        type: "string"
+        example: "Plenum 1"
+      tags:
+        type: "array"
+        xml:
+          name: "tag"
+          wrapped: true
+        items:
+          $ref: "#/definitions/Tag"
+      start:
+        type: "string"
+        format: "date-time"
+      end:
+        type: "string"
+        format: "date-time"
+      location:
+        $ref: "#/definitions/Location"
+      recurrence:
+        type: "integer"
+    xml:
+      name: "Event"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"

@@ -2,14 +2,20 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from sqlalchemy import and_, func
+from sqlalchemy import func
 
 from backend.adapter.wordpress.location import Location
 from backend.adapter.wordpress.group import Group
 from backend.adapter.wordpress.event import Event
 from datetime import date
+from datetime import datetime
 
-from app import db
+from app_config import db
+
+
+def create_filter(count: int = 30, page: int = 1, from_datetime: datetime = datetime.now()):
+    # This sets defaults for values not set in the request
+    return {"count": count, "page": page, "from": from_datetime}
 
 
 def event_to_dict(event: Event) -> dict:
@@ -30,6 +36,14 @@ def event_to_dict(event: Event) -> dict:
         "start": event.start,
         "end": event.end
     }
+
+
+def get_events_by_filter(from_dt: datetime, page: int, count: int) -> list:
+    events = Event.query.filter(Event.end >= from_dt).paginate(page=page, per_page=count)
+    events_dict = []
+    for event in events.items:
+        events_dict.append(event_to_dict(event))
+    return events_dict
 
 
 def get_event(id: int) -> dict:
