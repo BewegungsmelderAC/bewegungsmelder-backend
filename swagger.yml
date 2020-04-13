@@ -6,9 +6,8 @@ info:
   contact:
     email: "team@bewegungsmelder-aachen.de"
   license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "127.0.0.1:8080"
+    name: "Dont know yet"
+    url: "https://example.com"
 basePath: "/api"
 tags:
 - name: "Home"
@@ -18,6 +17,7 @@ tags:
     url: "https://bewegungsmelder-aachen.de"
 schemes:
 - "http"
+- "https"
 consumes:
   - application/json
 produces:
