@@ -38,8 +38,19 @@ def event_to_dict(event: Event) -> dict:
     }
 
 
-def get_events_by_filter(from_dt: datetime, page: int, count: int) -> list:
-    events = Event.query.filter(Event.end >= from_dt).paginate(page=page, per_page=count)
+def get_events_by_filter(from_dt: datetime, page: int, count: int, group_ids: list) -> list:
+
+    # construct group filter
+    if len(group_ids) == 0:
+        group_condition = True
+    else:
+        group_condition = Event.group_id == int(group_ids[0])
+        if len(group_ids) > 1:
+            for i in range(1, len(group_ids)):
+                group_condition = db.or_(group_condition, Event.group_id == int(group_ids[i]))
+
+    # construct complete filter
+    events = Event.query.filter(db.and_(Event.end >= from_dt), group_condition).paginate(page=page, per_page=count)
     events_dict = []
     for event in events.items:
         events_dict.append(event_to_dict(event))

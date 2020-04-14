@@ -27,20 +27,19 @@ def get_day_events(date: str):
             return events
 
 
-def get_filtered_events(page: int, per_page: int, from_datetime: str = ""):
+def get_filtered_events(page: int, per_page: int, from_datetime: str = "", group_ids: str = ""):
+    group_ids = group_ids.split(",")  # split ids
+    group_ids = [x for x in group_ids if x]  # remove empty elements
     if from_datetime == "":
-        from_dt=datetime.now()
+        from_dt = datetime.now()
     else:
-
         try:
-            from_dt=datetime.fromisoformat(from_datetime.replace("Z", "+00:00"))
+            from_dt = datetime.fromisoformat(from_datetime.replace("Z", "+00:00"))
         except ValueError:
             abort(400, "Incorrect from_datetime")
             return
-    events = get_events_by_filter(from_dt=from_dt, page=page, count=per_page)
+    events = get_events_by_filter(from_dt=from_dt, page=page, count=per_page, group_ids=group_ids)
     if not events:
         abort(404, "No events found for selected filter")
     else:
         return events
-
-
