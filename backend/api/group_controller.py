@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from datetime import datetime
 
 from flask import abort
 from backend.service.group_service import get_group, get_groups_by_filter
