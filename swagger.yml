@@ -88,6 +88,11 @@ paths:
           required: false
           type: "string"
           pattern: '^[0-9,]+$'
+        - name: "categories"
+          in: "query"
+          description: "filter by category, multiple separated by ';'"
+          required: false
+          type: "string"
       responses:
         200:
           description: "successful operation"

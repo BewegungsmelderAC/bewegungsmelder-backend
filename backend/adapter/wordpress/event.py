@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from sqlalchemy.ext.associationproxy import association_proxy
+
 from app_config import db
 
 
@@ -20,8 +22,9 @@ class Event(db.Model):
     group_id = db.Column('group_id', db.Integer, db.ForeignKey('wp_bp_groups.id'))
     group = db.relationship("Group", primaryjoin="Event.group_id == Group.id", foreign_keys=group_id,
                             backref="events")
-    category = db.relationship("Metadata", primaryjoin="and_(Event.post_id == Metadata.post_id, "
+    category_item = db.relationship("Metadata", primaryjoin="and_(Event.post_id == Metadata.post_id, "
                                                        "Metadata.meta_key=='Veranstaltungsart')", foreign_keys=post_id,
-                               backref="events")
+                               backref="events", viewonly=True) # this is the full line of the metadata table
+    category = association_proxy('category_item', 'meta_value') # this is only the meta_value from the category entry
     recurrence = db.Column("recurrence", db.Integer)
     # event category missing

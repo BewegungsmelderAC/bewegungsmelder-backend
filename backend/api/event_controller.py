@@ -27,11 +27,13 @@ def get_day_events(date: str):
             return events
 
 
-def get_filtered_events(page: int, per_page: int, from_datetime: str = "", group_ids: str = "", location_ids: str = ""):
+def get_filtered_events(page: int, per_page: int, from_datetime: str = "", group_ids: str = "", location_ids: str = "", categories: str = ""):
     group_ids = group_ids.split(",")  # split ids
-    group_ids = [x for x in group_ids if x]  # remove empty elements
+    group_ids = [int(x) for x in group_ids if x]  # remove empty elements
     location_ids = location_ids.split(",")  # split ids
-    location_ids = [x for x in location_ids if x]  # remove empty elements
+    location_ids = [int(x) for x in location_ids if x]  # remove empty elements
+    categories = categories.split(";")  # split ids
+    categories = [x for x in categories if x]  # remove empty elements
     if from_datetime == "":
         from_dt = datetime.now()
     else:
@@ -40,7 +42,7 @@ def get_filtered_events(page: int, per_page: int, from_datetime: str = "", group
         except ValueError:
             abort(400, "Incorrect from_datetime")
             return
-    events = get_events_by_filter(from_dt=from_dt, page=page, count=per_page, group_ids=group_ids, location_ids=location_ids)
+    events = get_events_by_filter(from_dt=from_dt, page=page, count=per_page, group_ids=group_ids, location_ids=location_ids, categories=categories)
     if not events:
         abort(404, "No events found for selected filter")
     else:
