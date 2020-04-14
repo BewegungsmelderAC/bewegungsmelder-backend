@@ -6,7 +6,7 @@ from app_config import db
 class Event(db.Model):
     __tablename__ = 'wp_em_events'
     name = db.Column('event_name', db.String)
-    url = db.Column('event_slug', db.String)
+    slug = db.Column('event_slug', db.String)
     id = db.Column('event_id', db.Integer, primary_key=True)
     post_id = db.Column('post_id', db.Integer)
     start = db.Column('event_start', db.DateTime())
