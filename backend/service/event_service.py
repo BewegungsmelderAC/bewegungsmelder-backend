@@ -6,12 +6,14 @@ from sqlalchemy import func
 
 from backend.adapter.wordpress.location import Location
 from backend.adapter.wordpress.group import Group
+from backend.adapter.wordpress.metadata import Metadata
 from backend.adapter.wordpress.event import Event
 from datetime import date
 from datetime import datetime
 
 from app_config import db
 from backend.service.group_service import group_to_compact_dict
+
 
 def create_filter(count: int = 30, page: int = 1, from_datetime: datetime = datetime.now()):
     # This sets defaults for values not set in the request
@@ -31,7 +33,8 @@ def event_to_dict(event: Event) -> dict:
         "location": location,
         "group": group,
         "start": event.start,
-        "end": event.end
+        "end": event.end,
+        "category": event.category.meta_value if event.category is not None else "Veranstaltungsart nicht angegeben"
     }
 
 

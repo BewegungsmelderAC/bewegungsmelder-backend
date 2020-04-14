@@ -8,6 +8,7 @@ class Event(db.Model):
     name = db.Column('event_name', db.String)
     url = db.Column('event_slug', db.String)
     id = db.Column('event_id', db.Integer, primary_key=True)
+    post_id = db.Column('post_id', db.Integer)
     start = db.Column('event_start', db.DateTime())
     end = db.Column('event_end', db.DateTime())
     all_day = db.Column('event_all_day', db.Boolean)
@@ -19,5 +20,8 @@ class Event(db.Model):
     group_id = db.Column('group_id', db.Integer, db.ForeignKey('wp_bp_groups.id'))
     group = db.relationship("Group", primaryjoin="Event.group_id == Group.id", foreign_keys=group_id,
                             backref="events")
+    category = db.relationship("Metadata", primaryjoin="and_(Event.post_id == Metadata.post_id, "
+                                                       "Metadata.meta_key=='Veranstaltungsart')", foreign_keys=post_id,
+                               backref="events")
     recurrence = db.Column("recurrence", db.Integer)
     # event category missing
