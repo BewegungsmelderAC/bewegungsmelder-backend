@@ -32,7 +32,7 @@ def event_to_compact_dict(event: Event) -> dict:
         "group": group,
         "start": event.start,
         "end": event.end,
-        "category": event.category.meta_value if event.category is not None else "Veranstaltungsart nicht angegeben"
+        "category": event.category.meta_value if event.category is not None else None
     }
 
 
@@ -47,7 +47,7 @@ def event_to_full_dict(event: Event) -> dict:
         "group": group,
         "start": event.start,
         "end": event.end,
-        "category": event.category.meta_value if event.category is not None else "Veranstaltungsart nicht angegeben",
+        "category": event.category.meta_value if event.category is not None else None,
         "recurrence": event.recurrence,
         "all_day": event.all_day,
         "content": event.content,
@@ -55,7 +55,16 @@ def event_to_full_dict(event: Event) -> dict:
     }
 
 
-def get_events_by_filter(from_dt: datetime, page: int, count: int, group_ids: list) -> list:
+def get_events_by_filter(from_dt: datetime, page: int, count: int, group_ids: list, location_ids: list) -> list:
+
+    # construct location filter
+    if len(location_ids) == 0:
+        location_condition = True
+    else:
+        location_condition = Event.location_id == int(location_ids[0])
+        if len(location_ids) > 1:
+            for i in range(1, len(location_ids)):
+                location_condition = db.or_(location_condition, Event.location_id == int(location_ids[i]))
 
     # construct group filter
     if len(group_ids) == 0:
@@ -67,7 +76,8 @@ def get_events_by_filter(from_dt: datetime, page: int, count: int, group_ids: li
                 group_condition = db.or_(group_condition, Event.group_id == int(group_ids[i]))
 
     # construct complete filter
-    events = Event.query.filter(db.and_(Event.end >= from_dt), group_condition).paginate(page=page, per_page=count)
+    events = Event.query.filter(db.and_(Event.end >= from_dt), group_condition, location_condition,
+                                db.or_(Event.recurrence == 0, Event.recurrence == None)).paginate(page=page, per_page=count)
     events_dict = []
     for event in events.items:
         events_dict.append(event_to_compact_dict(event))
