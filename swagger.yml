@@ -266,6 +266,28 @@ definitions:
         format: "date-time"
       slug:
         type: "string"
+      cover:
+        type: "string"
+      avatar:
+        type: "string"
+      contact_email:
+        type: "string"
+      contact_name:
+        type: "string"
+      meetup_description:
+        type: "string"
+      website:
+        type: "string"
+      telephone:
+        type: "string"
+      metadata:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      terms:
+        type: "array"
+        items:
+          $ref: "#/definitions/Term"
     xml:
       name: "FullGroup"
   Location:
@@ -354,8 +376,19 @@ definitions:
         type: "string"
       slug:
         type: "string"
+      image:
+        type: "string"
     xml:
       name: "FullEvent"
+  Term:
+    type: "object"
+    properties:
+      slug:
+        type: "string"
+      name:
+        type: "string"
+    xml:
+      name: "Term"
 externalDocs:
   description: "Quellcode und Lizenz auf Github"
   url: "https://github.com/BewegungsmelderAC"

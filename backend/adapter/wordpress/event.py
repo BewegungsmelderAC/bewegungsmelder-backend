@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from sqlalchemy.ext.associationproxy import association_proxy
+from .post import Post
 
 from app_config import db
 
@@ -23,8 +24,14 @@ class Event(db.Model):
     group = db.relationship("Group", primaryjoin="Event.group_id == Group.id", foreign_keys=group_id,
                             backref="events")
     category_item = db.relationship("Metadata", primaryjoin="and_(Event.post_id == Metadata.post_id, "
-                                                       "Metadata.meta_key=='Veranstaltungsart')", foreign_keys=post_id,
-                               backref="events", viewonly=True) # this is the full line of the metadata table
-    category = association_proxy('category_item', 'meta_value') # this is only the meta_value from the category entry
+                                                            "Metadata.meta_key=='Veranstaltungsart')",
+                                    foreign_keys=post_id,
+                                    backref="events", viewonly=True)  # this is the full line of the metadata table
+    category = association_proxy('category_item', 'meta_value')  # this is only the meta_value from the category entry
     recurrence = db.Column("recurrence", db.Integer)
-    # event category missing
+
+    def get_image(self):
+        attachment: Post = Post.query.filter(db.and_(Post.parent == self.post_id, Post.type == "attachment")).first()
+        if attachment is not None:
+            return attachment.guid
+        return None

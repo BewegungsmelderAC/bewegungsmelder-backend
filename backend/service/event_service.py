@@ -57,7 +57,8 @@ def event_to_full_dict(event: Event) -> dict:
         "recurrence": event.recurrence,
         "all_day": event.all_day,
         "content": event.content,
-        "slug": event.slug
+        "slug": event.slug,
+        "image": event.get_image(),
     }
 
 

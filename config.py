@@ -18,3 +18,4 @@ except KeyError:
 LOGGING_LEVEL = os.getenv('BM_LOGGING_LEVEL', 'INFO')
 STATIC_FOLDER = os.getenv('BM_STATIC_FOLDER_PATH', './../bewegungsmelder-web/dist/files')
 TEMPLATE_FOLDER = os.getenv('BM_TEMPLATE_FOLDER_PATH', './../bewegungsmelder-web/dist')
+BEWEGUNGSMELDER_BASE = os.getenv('BM_BEWEGUNGSMELDER_BASE', "https://bewegungsmelder-aachen.de")
