@@ -25,11 +25,19 @@ def group_to_full_dict(group: Group) -> dict:
 
 
 def group_to_compact_dict(group: Group) -> dict:
-    return {"name": group.name, "id": group.id}
+    return {"name": group.name, "slug": group.slug}
 
 
-def get_group(group_id: int) -> dict:
+def get_group_by_id(group_id: int) -> dict:
     group = Group.query.get(group_id)
+    if group is None:
+        return {}
+    else:
+        return group_to_full_dict(group)
+
+
+def get_group_by_slug(slug: str) -> dict:
+    group = Group.query.filter(Group.slug == slug).first()
     if group is None:
         return {}
     else:
