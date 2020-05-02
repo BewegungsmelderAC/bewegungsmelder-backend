@@ -6,7 +6,7 @@ from backend.adapter.wordpress.location import Location
 
 def location_to_compact_dict(location: Location) -> dict:
     return {"name": location.name,
-            "id": location.id}
+            "slug": location.slug}
 
 
 def location_to_full_dict(location: Location) -> dict:
@@ -20,6 +20,14 @@ def location_to_full_dict(location: Location) -> dict:
 
 def get_location(location_id: int) -> dict:
     location = Location.query.get(location_id)
+    if location is None:
+        return {}
+    else:
+        return location_to_full_dict(location)
+
+
+def get_location_by_slug(location_slug: str) -> dict:
+    location = Location.query.filter(Location.slug == location_slug).first()
     if location is None:
         return {}
     else:

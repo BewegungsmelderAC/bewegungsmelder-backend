@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import abort
-from backend.service.location_service import get_location, get_locations_by_filter
+from backend.service.location_service import get_location, get_locations_by_filter, get_location_by_slug
 
 
 def get_single_location(location_id: int = None):
@@ -14,6 +14,14 @@ def get_single_location(location_id: int = None):
             abort(404, "Location not found")
         else:
             return location
+
+
+def get_single_location_by_slug(location_slug: str):
+    location = get_location_by_slug(location_slug)
+    if location == {}:
+        abort(404, "Location not found")
+    else:
+        return location
 
 
 def get_filtered_locations(page: int, per_page: int):
