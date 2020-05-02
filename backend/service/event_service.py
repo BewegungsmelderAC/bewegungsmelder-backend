@@ -24,7 +24,7 @@ def event_to_compact_dict(event: Event) -> dict:
     group = group_to_compact_dict(event.group) if event.group is not None else {}
     return {
         "name": event.name,
-        "id": event.id,
+        "slug": event.slug,
         "location": location,
         "group": group,
         "start": event.start,
@@ -76,6 +76,14 @@ def get_events_by_filter(from_dt: datetime, page: int, count: int, group_ids: li
 
 def get_event(id: int) -> dict:
     event = Event.query.get(id)
+    if event is None:
+        return {}
+    data = event_to_full_dict(event)
+    return data
+
+
+def get_event_by_slug(slug: str) -> dict:
+    event = Event.query.filter(Event.slug == slug).first()
     if event is None:
         return {}
     data = event_to_full_dict(event)

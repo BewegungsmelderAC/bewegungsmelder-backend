@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
-from backend.service.event_service import get_event, get_events_by_day, get_events_by_filter
+from backend.service.event_service import get_event, get_events_by_day, get_events_by_filter, get_event_by_slug
 from flask import abort
 
 
@@ -10,6 +10,14 @@ def get_single_event(event_id: int):
     event = get_event(event_id)
     if event == {}:
         abort(404, "Event not found for Id: {}".format(event_id))
+    else:
+        return event
+
+
+def get_single_event_by_slug(event_slug: str):
+    event = get_event_by_slug(event_slug)
+    if event == {}:
+        abort(404, "Event not found for slug: {}".format(event_slug))
     else:
         return event
 
