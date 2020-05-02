@@ -368,8 +368,6 @@ definitions:
         format: "date-time"
       location:
         $ref: "#/definitions/Location"
-      recurrence:
-        type: "integer"
       all_day:
         type: "boolean"
       content:
@@ -378,6 +376,22 @@ definitions:
         type: "string"
       image:
         type: "string"
+      telephone:
+        type: "string"
+      accessible:
+        type: "boolean"
+      contact_email:
+        type: "string"
+      website:
+        type: "string"
+      metadata:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      terms:
+        type: "array"
+        items:
+          $ref: "#/definitions/Term"
     xml:
       name: "FullEvent"
   Term:

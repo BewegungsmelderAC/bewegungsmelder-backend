@@ -11,11 +11,7 @@ from app_config import db
 from .metadata import Metadata
 from .post import Post
 from .term import Term
-
-association_table = db.Table('wp_term_relationships', db.Model.metadata,
-                             db.Column('object_id', db.Integer, db.ForeignKey('wp_bp_groups.id')),
-                             db.Column('term_taxonomy_id', db.Integer, db.ForeignKey('wp_terms.term_id'))
-                             )
+from .term import association_table
 
 
 class Group(db.Model):

@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from sqlalchemy.ext.associationproxy import association_proxy
+
+from .metadata import Metadata
 from .post import Post
+from .term import association_table
 
 from app_config import db
 
@@ -29,9 +32,42 @@ class Event(db.Model):
                                     backref="events", viewonly=True)  # this is the full line of the metadata table
     category = association_proxy('category_item', 'meta_value')  # this is only the meta_value from the category entry
     recurrence = db.Column("recurrence", db.Integer)
+    recurrence_id = db.Column("recurrence_id", db.Integer)
+    recurrence_parent = db.relationship("Event", primaryjoin="Event.recurrence_id == Event.id", remote_side=[id],
+                                        foreign_keys=recurrence_id, backref="recurrence_children", viewonly=True)
+    event_status = db.Column("event_status", db.Integer) # 0 means not visible, None and 1 mean visible
+    telephone = ""
+    contact_email = ""
+    accessible = False
+    website = ""
+    terms = db.relationship("Term",secondary=association_table, backref="events")
 
     def get_image(self):
         attachment: Post = Post.query.filter(db.and_(Post.parent == self.post_id, Post.type == "attachment")).first()
         if attachment is not None:
             return attachment.guid
+        elif self.recurrence_id != 0 and self.recurrence_parent is not None:
+            attachment: Post = Post.query.filter(db.and_(Post.parent == self.recurrence_parent.post_id, Post.type == "attachment")).first()
+            if attachment is not None:
+                return attachment.guid
         return None
+
+    def get_all_metadata(self):
+        metadata = Metadata.query.filter(Metadata.post_id == self.post_id).all()
+        meta = {}
+        for metaentry in metadata:
+            if not metaentry.meta_key.startswith("_") and metaentry.meta_value != "":
+                if metaentry.meta_key == "Kontakt-Telefon":
+                    self.telephone = metaentry.meta_value
+                elif metaentry.meta_key == "Barrierefrei":
+                    self.accessible = True if metaentry.meta_value == "Ja" else False
+                elif metaentry.meta_key == "Kontakt-Email":
+                    self.contact_email = metaentry.meta_value
+                elif metaentry.meta_key == "Veranstaltungsart":
+                    continue
+                elif metaentry.meta_key == "weiterführende Links 1":
+                    self.website = metaentry.meta_value
+                else:
+                    meta[metaentry.meta_key] = metaentry.meta_value
+                # add more metadata here if necessary
+        return meta
