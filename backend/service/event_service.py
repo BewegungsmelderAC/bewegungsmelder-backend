@@ -67,13 +67,14 @@ def event_to_full_dict(event: Event) -> dict:
     }
 
 
-def get_events_by_filter(from_dt: datetime, page: int, count: int, group_ids: list, location_ids: list, categories: list) -> list:
+def get_events_by_filter(from_dt: datetime, page: int, count: int, group_ids: list, location_ids: list,
+                         categories: list, terms: list) -> list:
     location_condition = construct_filter_statement(location_ids, Event.location_id)
     group_condition = construct_filter_statement(group_ids, Event.group_id)
     categories_condition = construct_filter_statement(categories, Event.category)
-
+    terms_condition = construct_filter_statement(terms, Event.terms_slugs)
     # construct complete filter
-    events = Event.query.filter(db.and_(Event.end >= from_dt, group_condition, location_condition,
+    events = Event.query.filter(db.and_(Event.end >= from_dt, group_condition, location_condition, terms_condition,
                                 categories_condition, Event.event_status != 0, db.or_(Event.recurrence == 0,
                                 Event.recurrence == None))).paginate(page=page, per_page=count)
     events_dict = []

@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from sqlalchemy.ext.associationproxy import association_proxy
+
+
 from app_config import db
+from backend.adapter.wordpress.taxonomy import Taxonomy
 
 association_table = db.Table('wp_term_relationships', db.Model.metadata,
                              db.Column('object_id', db.Integer, db.ForeignKey('wp_em_events.post_id'), db.ForeignKey('wp_bp_groups.id')),
@@ -13,3 +17,5 @@ class Term(db.Model):
     name = db.Column('name', db.String)
     slug = db.Column('slug', db.String)
     term_group = db.Column('term_group', db.Integer)  # this is unused and here only for completeness
+    taxonomy_item = db.relationship('Taxonomy', primaryjoin="Taxonomy.term_id == Term.id", foreign_keys=id)
+    type = association_proxy('taxonomy_item', 'taxonomy')

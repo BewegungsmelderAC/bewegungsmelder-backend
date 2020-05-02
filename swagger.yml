@@ -93,6 +93,11 @@ paths:
           description: "filter by category, multiple separated by ';'"
           required: false
           type: "string"
+        - name: "terms"
+          in: "query"
+          description: "filter by term slug, multiple separated by ','"
+          required: false
+          type: "string"
       responses:
         200:
           description: "successful operation"
@@ -127,6 +132,21 @@ paths:
           description: "Invalid ID supplied"
         404:
           description: "Event not found"
+  /event/terms:
+    get:
+      tags:
+        - "event"
+      summary: "Lists all terms applicable to events"
+      operationId: "backend.api.term_controller.get_all_event_terms"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Term"
+        404:
+          description: "No terms found"
 
   /group/{group_id}:
     get:
@@ -183,6 +203,21 @@ paths:
               $ref: "#/definitions/Group"
         404:
           description: "No groups found"
+  /group/terms:
+    get:
+      tags:
+        - "group"
+      summary: "Lists all terms applicable to groups"
+      operationId: "backend.api.term_controller.get_all_group_terms"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Term"
+        404:
+          description: "No terms found"
 
   /location/{location_id}:
     get:
@@ -379,7 +414,7 @@ definitions:
       telephone:
         type: "string"
       accessible:
-        type: "boolean"
+        type: "string"
       contact_email:
         type: "string"
       website:

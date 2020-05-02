@@ -35,19 +35,21 @@ class Event(db.Model):
     recurrence_id = db.Column("recurrence_id", db.Integer)
     recurrence_parent = db.relationship("Event", primaryjoin="Event.recurrence_id == Event.id", remote_side=[id],
                                         foreign_keys=recurrence_id, backref="recurrence_children", viewonly=True)
-    event_status = db.Column("event_status", db.Integer) # 0 means not visible, None and 1 mean visible
+    event_status = db.Column("event_status", db.Integer)  # 0 means not visible, None and 1 mean visible
     telephone = ""
     contact_email = ""
-    accessible = False
+    accessible = "Nein"
     website = ""
-    terms = db.relationship("Term",secondary=association_table, backref="events")
+    terms = db.relationship("Term", secondary=association_table, backref="events")
+    terms_slugs = association_proxy('terms', 'slug')
 
     def get_image(self):
         attachment: Post = Post.query.filter(db.and_(Post.parent == self.post_id, Post.type == "attachment")).first()
         if attachment is not None:
             return attachment.guid
         elif self.recurrence_id != 0 and self.recurrence_parent is not None:
-            attachment: Post = Post.query.filter(db.and_(Post.parent == self.recurrence_parent.post_id, Post.type == "attachment")).first()
+            attachment: Post = Post.query.filter(
+                db.and_(Post.parent == self.recurrence_parent.post_id, Post.type == "attachment")).first()
             if attachment is not None:
                 return attachment.guid
         return None
@@ -60,7 +62,7 @@ class Event(db.Model):
                 if metaentry.meta_key == "Kontakt-Telefon":
                     self.telephone = metaentry.meta_value
                 elif metaentry.meta_key == "Barrierefrei":
-                    self.accessible = True if metaentry.meta_value == "Ja" else False
+                    self.accessible = metaentry.meta_value
                 elif metaentry.meta_key == "Kontakt-Email":
                     self.contact_email = metaentry.meta_value
                 elif metaentry.meta_key == "Veranstaltungsart":

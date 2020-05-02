@@ -26,9 +26,7 @@ class Group(db.Model):
                                    foreign_keys=id,
                                    backref="group", viewonly=True)  # this is the full line of the metadata table
     post_id = association_proxy('post_id_item', 'post_id')
-    terms = db.relationship("Term",
-                            secondary=association_table,
-                            backref="groups")
+    terms = db.relationship("Term", secondary=association_table, backref="groups")
     contact_email = ""
     contact_name = ""
     website = ""

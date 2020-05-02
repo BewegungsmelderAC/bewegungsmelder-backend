@@ -28,7 +28,7 @@ def get_location(location_id: int) -> dict:
 
 def get_locations_by_filter(page: int, count:int) ->list:
     locations = Location.query.paginate(page=page, per_page=count)
-    locations_dict = []
+    location_dicts = []
     for location in locations.items:
-        locations_dict.append(location_to_compact_dict(location))
-    return locations_dict
+        location_dicts.append(location_to_compact_dict(location))
+    return location_dicts
