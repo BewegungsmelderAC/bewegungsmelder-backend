@@ -16,8 +16,10 @@ def get_single_group(group_id: int = None):
             return group
 
 
-def get_filtered_groups(page: int, per_page: int):
-    groups = get_groups_by_filter(page=page, count=per_page)
+def get_filtered_groups(page: int, per_page: int, terms: str = ""):
+    terms = terms.split(",")  # split ids
+    terms = [x for x in terms if x]  # remove empty elements
+    groups = get_groups_by_filter(page=page, count=per_page, terms=terms)
     if not groups:
         abort(404, "No groups found for selected filter")
     else:

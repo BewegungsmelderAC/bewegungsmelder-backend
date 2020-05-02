@@ -15,16 +15,7 @@ from datetime import datetime
 from app_config import db
 from backend.service.group_service import group_to_compact_dict
 from backend.service.location_service import location_to_compact_dict
-
-
-def construct_filter_statement(items: list, col: db.Column):
-    condition = False
-    if len(items) > 0:
-        for i in range(0, len(items)):
-            condition = db.or_(condition, col == items[i])
-    else:
-        condition = True
-    return condition
+from backend.utility import construct_filter_statement
 
 
 def event_to_compact_dict(event: Event) -> dict:

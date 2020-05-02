@@ -25,7 +25,8 @@ class Group(db.Model):
                                                            "Metadata.meta_key=='group_id')",
                                    foreign_keys=id, viewonly=True)  # this is the full line of the metadata table
     post_id = association_proxy('post_id_item', 'post_id')
-    terms = db.relationship("Term", secondary=association_table)
+    terms = db.relationship("Term", secondary=association_table, viewonly=True)
+    terms_slugs = association_proxy('terms', 'slug')
     contact_email = ""
     contact_name = ""
     website = ""

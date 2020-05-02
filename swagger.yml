@@ -194,6 +194,11 @@ paths:
           format: "int32"
           minimum: 1
           default: 20
+        - name: "terms"
+          in: "query"
+          description: "filter by term slug, multiple separated by ','"
+          required: false
+          type: "string"
       responses:
         200:
           description: "successful operation"
