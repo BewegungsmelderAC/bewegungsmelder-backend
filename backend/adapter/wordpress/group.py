@@ -23,10 +23,9 @@ class Group(db.Model):
     date_created = db.Column('date_created', db.DateTime())
     post_id_item = db.relationship("Metadata", primaryjoin="and_(Metadata.meta_value==Group.id, "
                                                            "Metadata.meta_key=='group_id')",
-                                   foreign_keys=id,
-                                   backref="group", viewonly=True)  # this is the full line of the metadata table
+                                   foreign_keys=id, viewonly=True)  # this is the full line of the metadata table
     post_id = association_proxy('post_id_item', 'post_id')
-    terms = db.relationship("Term", secondary=association_table, backref="groups")
+    terms = db.relationship("Term", secondary=association_table)
     contact_email = ""
     contact_name = ""
     website = ""

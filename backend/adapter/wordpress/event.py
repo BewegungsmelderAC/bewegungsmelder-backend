@@ -21,26 +21,26 @@ class Event(db.Model):
     content = db.Column('post_content', db.String)
     location_id = db.Column('location_id', db.Integer, db.ForeignKey('wp_em_locations.location_id'))
     location = db.relationship("Location", primaryjoin="Event.location_id == Location.id", foreign_keys=location_id,
-                               backref="events")
+                               viewonly=True)
     # because location_id is not a ForeignKey, we need primaryjoin
     group_id = db.Column('group_id', db.Integer, db.ForeignKey('wp_bp_groups.id'))
     group = db.relationship("Group", primaryjoin="Event.group_id == Group.id", foreign_keys=group_id,
-                            backref="events")
+                            viewonly=True)
     category_item = db.relationship("Metadata", primaryjoin="and_(Event.post_id == Metadata.post_id, "
                                                             "Metadata.meta_key=='Veranstaltungsart')",
                                     foreign_keys=post_id,
-                                    backref="events", viewonly=True)  # this is the full line of the metadata table
+                                    viewonly=True)  # this is the full line of the metadata table
     category = association_proxy('category_item', 'meta_value')  # this is only the meta_value from the category entry
     recurrence = db.Column("recurrence", db.Integer)
     recurrence_id = db.Column("recurrence_id", db.Integer)
     recurrence_parent = db.relationship("Event", primaryjoin="Event.recurrence_id == Event.id", remote_side=[id],
-                                        foreign_keys=recurrence_id, backref="recurrence_children", viewonly=True)
+                                        foreign_keys=recurrence_id, backref="recurrence_children")
     event_status = db.Column("event_status", db.Integer)  # 0 means not visible, None and 1 mean visible
     telephone = ""
     contact_email = ""
     accessible = "Nein"
     website = ""
-    terms = db.relationship("Term", secondary=association_table, backref="events")
+    terms = db.relationship("Term", secondary=association_table, viewonly=True)
     terms_slugs = association_proxy('terms', 'slug')
 
     def get_image(self):
