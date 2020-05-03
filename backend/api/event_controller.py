@@ -41,7 +41,6 @@ def get_filtered_events(page: int, per_page: int, from_datetime: str = "", group
     valid_text = fullmatch(r"[\p{L} ]*", text)
     if valid_text is None:
         abort(400, "Input search string invalid, only letters and spaces allowed")
-
     group_ids = group_ids.split(",")  # split ids
     group_ids = [int(x) for x in group_ids if x]  # remove empty elements
     location_ids = location_ids.split(",")  # split ids
