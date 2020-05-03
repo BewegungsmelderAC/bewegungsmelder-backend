@@ -350,6 +350,12 @@ paths:
           format: "int32"
           minimum: 1
           default: 20
+        - name: "text"
+          in: "query"
+          description: "search for text in title, this only validates for letters and space, search is performed case-
+        and accent-insensitive, that means ä==A"
+          required: false
+          type: "string"
       responses:
         200:
           description: "successful operation"
@@ -357,6 +363,8 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/Location"
+        400:
+          description: "Invalid input, e.g. search text"
         404:
           description: "No locations found"
 

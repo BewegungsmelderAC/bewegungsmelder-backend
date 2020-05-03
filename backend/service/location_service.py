@@ -34,8 +34,9 @@ def get_location_by_slug(location_slug: str) -> dict:
         return location_to_full_dict(location)
 
 
-def get_locations_by_filter(page: int, count:int) ->list:
-    locations = Location.query.paginate(page=page, per_page=count)
+def get_locations_by_filter(page: int, count:int, text: str) ->list:
+    text_condition = Location.name.like("%{}%".format(text)) if text != "" else True
+    locations = Location.query.filter(text_condition).paginate(page=page, per_page=count)
     location_dicts = []
     for location in locations.items:
         location_dicts.append(location_to_compact_dict(location))
