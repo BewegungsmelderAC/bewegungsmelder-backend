@@ -19,7 +19,6 @@ from backend.utility import construct_filter_statement
 
 
 def event_to_compact_dict(event: Event) -> dict:
-    logging.debug("processing event {} from {} to {}".format(event.name, event.start, event.end))
     location = location_to_compact_dict(event.location) if event.location is not None else {}
     group = group_to_compact_dict(event.group) if event.group is not None else {}
     return {
@@ -29,7 +28,8 @@ def event_to_compact_dict(event: Event) -> dict:
         "group": group,
         "start": event.start,
         "end": event.end,
-        "type": event.event_type
+        "type": event.event_type,
+        "thumbnail": event.get_thumbnail_image()
     }
 
 
@@ -45,11 +45,11 @@ def event_to_full_dict(event: Event) -> dict:
         "group": group,
         "start": event.start,
         "end": event.end,
-        "category": event.category,
+        "type": event.event_type,
         "all_day": event.all_day,
         "content": event.content,
         "slug": event.slug,
-        "image": event.get_image(),
+        "image": event.get_full_image(),
         "telephone": event.telephone,
         "accessible": event.accessible,
         "contact_email": event.contact_email,

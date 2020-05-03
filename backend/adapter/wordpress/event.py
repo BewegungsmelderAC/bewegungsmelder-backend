@@ -1,12 +1,27 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from sqlalchemy.ext.associationproxy import association_proxy
+import re
 
+from sqlalchemy.ext.associationproxy import association_proxy
+from phpserialize import loads
+
+from config import BEWEGUNGSMELDER_BASE
 from .metadata import Metadata
 from .post import Post
 from .term import association_table
 
 from app_config import db
+
+
+def get_image_thumbnail(attachment_post_id: int):
+    attachment_meta: Metadata = Metadata.query.filter(db.and_(attachment_post_id == Metadata.post_id,
+                                                              Metadata.meta_key == '_wp_attachment_metadata')).first()
+    image_metadata = loads(bytes(attachment_meta.meta_value, 'utf-8'), decode_strings=True)
+    # there's a lot of interesting stuff in image_metadata
+    # construct path
+    base = BEWEGUNGSMELDER_BASE + "/wp-content/uploads/"
+    month_folder = re.match(r"[0-9]{4}/[0-9]{2}/", image_metadata["file"])[0]
+    return base + month_folder + image_metadata["sizes"]["thumbnail"]["file"]
 
 
 class Event(db.Model):
@@ -27,10 +42,11 @@ class Event(db.Model):
     group = db.relationship("Group", primaryjoin="Event.group_id == Group.id", foreign_keys=group_id,
                             viewonly=True)
     event_type_item = db.relationship("Metadata", primaryjoin="and_(Event.post_id == Metadata.post_id, "
-                                                            "Metadata.meta_key=='Veranstaltungsart')",
-                                    foreign_keys=post_id,
-                                    viewonly=True)  # this is the full line of the metadata table
-    event_type = association_proxy('event_type_item', 'meta_value')  # this is only the meta_value from the category entry
+                                                              "Metadata.meta_key=='Veranstaltungsart')",
+                                      foreign_keys=post_id,
+                                      viewonly=True)  # this is the full line of the metadata table
+    event_type = association_proxy('event_type_item',
+                                   'meta_value')  # this is only the meta_value from the category entry
     recurrence = db.Column("recurrence", db.Integer)
     recurrence_id = db.Column("recurrence_id", db.Integer)
     recurrence_parent = db.relationship("Event", primaryjoin="Event.recurrence_id == Event.id", remote_side=[id],
@@ -43,7 +59,7 @@ class Event(db.Model):
     terms = db.relationship("Term", secondary=association_table, viewonly=True)
     terms_slugs = association_proxy('terms', 'slug')
 
-    def get_image(self):
+    def get_full_image(self):
         attachment: Post = Post.query.filter(db.and_(Post.parent == self.post_id, Post.type == "attachment")).first()
         if attachment is not None:
             return attachment.guid
@@ -52,6 +68,17 @@ class Event(db.Model):
                 db.and_(Post.parent == self.recurrence_parent.post_id, Post.type == "attachment")).first()
             if attachment is not None:
                 return attachment.guid
+        return None
+
+    def get_thumbnail_image(self):
+        attachment: Post = Post.query.filter(db.and_(Post.parent == self.post_id, Post.type == "attachment")).first()
+        if attachment is not None:
+            return get_image_thumbnail(attachment.id)
+        elif self.recurrence_id != 0 and self.recurrence_parent is not None:
+            attachment: Post = Post.query.filter(
+                db.and_(Post.parent == self.recurrence_parent.post_id, Post.type == "attachment")).first()
+            if attachment is not None:
+                return get_image_thumbnail(attachment.id)
         return None
 
     def get_all_metadata(self):

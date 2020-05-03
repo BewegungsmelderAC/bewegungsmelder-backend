@@ -485,6 +485,8 @@ definitions:
         format: "date-time"
       location:
         $ref: "#/definitions/Location"
+      thumbnail:
+        type: "string"
     xml:
       name: "Event"
   FullEvent:
@@ -500,7 +502,7 @@ definitions:
       name:
         type: "string"
         example: "Plenum 1"
-      category:
+      type:
         type: "string"
         example: "Aktion"
       start:
