@@ -26,7 +26,7 @@ def get_single_location_by_slug(location_slug: str):
         return location
 
 
-def get_filtered_locations(page: int, per_page: int, text: str):
+def get_filtered_locations(page: int, per_page: int, text: str = ""):
     valid_text = fullmatch(r"[\p{L} ]*", text)
     if valid_text is None:
         abort(400, "Input search string invalid, only letters and spaces allowed")

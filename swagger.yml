@@ -166,6 +166,13 @@ paths:
         - "event"
       summary: "Lists all terms applicable to events"
       operationId: "backend.api.term_controller.get_all_event_terms"
+      parameters:
+      - name: "text"
+        in: "query"
+        description: "search for text in name, this only validates for letters and space, search is performed case-
+       and accent-insensitive, that means ä==A"
+        required: false
+        type: "string"
       responses:
         200:
           description: "successful operation"
@@ -173,6 +180,8 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/Term"
+        400:
+          description: "Invalid slug supplied"
         404:
           description: "No terms found"
 
@@ -272,6 +281,13 @@ paths:
         - "group"
       summary: "Lists all terms applicable to groups"
       operationId: "backend.api.term_controller.get_all_group_terms"
+      parameters:
+        - name: "text"
+          in: "query"
+          description: "search for text in name, this only validates for letters and space, search is performed case-
+        and accent-insensitive, that means ä==A"
+          required: false
+          type: "string"
       responses:
         200:
           description: "successful operation"
@@ -279,6 +295,8 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/Term"
+        400:
+          description: "Invalid slug supplied"
         404:
           description: "No terms found"
 

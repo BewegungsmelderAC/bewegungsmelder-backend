@@ -9,8 +9,9 @@ def term_to_dict(term: Term):
             "slug": term.slug}
 
 
-def get_terms_by_type(type: str):
-    terms = Term.query.filter(Term.type == type).all()
+def get_terms_by_type(type: str, text: str):
+    text_condition = Term.name.like("%{}%".format(text)) if text != "" else True
+    terms = Term.query.filter(Term.type == type, text_condition).all()
     terms_dicts = []
     for term in terms:
         terms_dicts.append(term_to_dict(term))

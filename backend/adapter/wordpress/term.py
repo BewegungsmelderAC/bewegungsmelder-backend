@@ -11,6 +11,7 @@ association_table = db.Table('wp_term_relationships', db.Model.metadata,
                              db.Column('term_taxonomy_id', db.Integer, db.ForeignKey('wp_terms.term_id')),
                              )
 
+
 class Term(db.Model):
     __tablename__ = 'wp_terms'
     id = db.Column('term_id', db.Integer, primary_key=True)
