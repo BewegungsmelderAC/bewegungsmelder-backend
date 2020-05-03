@@ -88,9 +88,9 @@ paths:
           required: false
           type: "string"
           pattern: '^[0-9,]+$'
-        - name: "categories"
+        - name: "types"
           in: "query"
-          description: "filter by category, multiple separated by ';'"
+          description: "filter by event type, multiple separated by ';'"
           required: false
           type: "string"
         - name: "terms"

@@ -37,7 +37,7 @@ def get_day_events(date: str):
 
 
 def get_filtered_events(page: int, per_page: int, from_datetime: str = "", group_ids: str = "", location_ids: str = "",
-                        categories: str = "", terms: str = "", text: str = ""):
+                        types: str = "", terms: str = "", text: str = ""):
     valid_text = fullmatch(r"[\p{L} ]*", text)
     if valid_text is None:
         abort(400, "Input search string invalid, only letters and spaces allowed")
@@ -45,8 +45,8 @@ def get_filtered_events(page: int, per_page: int, from_datetime: str = "", group
     group_ids = [int(x) for x in group_ids if x]  # remove empty elements
     location_ids = location_ids.split(",")  # split ids
     location_ids = [int(x) for x in location_ids if x]  # remove empty elements
-    categories = categories.split(";")  # split ids
-    categories = [x for x in categories if x]  # remove empty elements
+    event_types = types.split(";")  # split ids
+    event_types = [x for x in event_types if x]  # remove empty elements
     terms = terms.split(",")  # split ids
     terms = [x for x in terms if x]  # remove empty elements
     if from_datetime == "":
@@ -58,7 +58,7 @@ def get_filtered_events(page: int, per_page: int, from_datetime: str = "", group
             abort(400, "Incorrect from_datetime")
             return
     events = get_events_by_filter(from_dt=from_dt, page=page, count=per_page, group_ids=group_ids,
-                                  location_ids=location_ids, categories=categories, terms=terms, text=text)
+                                  location_ids=location_ids, event_types=event_types, terms=terms, text=text)
     if not events:
         abort(404, "No events found for selected filter")
     else:

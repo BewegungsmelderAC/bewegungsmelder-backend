@@ -26,16 +26,16 @@ class Event(db.Model):
     group_id = db.Column('group_id', db.Integer, db.ForeignKey('wp_bp_groups.id'))
     group = db.relationship("Group", primaryjoin="Event.group_id == Group.id", foreign_keys=group_id,
                             viewonly=True)
-    category_item = db.relationship("Metadata", primaryjoin="and_(Event.post_id == Metadata.post_id, "
+    event_type_item = db.relationship("Metadata", primaryjoin="and_(Event.post_id == Metadata.post_id, "
                                                             "Metadata.meta_key=='Veranstaltungsart')",
                                     foreign_keys=post_id,
                                     viewonly=True)  # this is the full line of the metadata table
-    category = association_proxy('category_item', 'meta_value')  # this is only the meta_value from the category entry
+    event_type = association_proxy('event_type_item', 'meta_value')  # this is only the meta_value from the category entry
     recurrence = db.Column("recurrence", db.Integer)
     recurrence_id = db.Column("recurrence_id", db.Integer)
     recurrence_parent = db.relationship("Event", primaryjoin="Event.recurrence_id == Event.id", remote_side=[id],
                                         foreign_keys=recurrence_id, backref="recurrence_children")
-    event_status = db.Column("event_status", db.Integer)  # 0 means not visible, None and 1 mean visible
+    visibility = db.Column("event_status", db.Integer)  # 0 means not visible, None and 1 mean visible
     telephone = ""
     contact_email = ""
     accessible = "Nein"

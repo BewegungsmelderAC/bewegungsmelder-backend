@@ -59,15 +59,15 @@ def event_to_full_dict(event: Event) -> dict:
 
 
 def get_events_by_filter(from_dt: datetime, page: int, count: int, group_ids: list, location_ids: list,
-                         categories: list, terms: list, text: str) -> list:
+                         event_types: list, terms: list, text: str) -> list:
     text_condition = Event.name.like("%{}%".format(text)) if text != "" else True
     location_condition = construct_filter_statement(location_ids, Event.location_id)
     group_condition = construct_filter_statement(group_ids, Event.group_id)
-    categories_condition = construct_filter_statement(categories, Event.category)
+    type_condition = construct_filter_statement(event_types, Event.event_type)
     terms_condition = construct_filter_statement(terms, Event.terms_slugs)
     # construct complete filter
     events = Event.query.filter(db.and_(Event.end >= from_dt, group_condition, location_condition, terms_condition,
-                                categories_condition, Event.event_status != 0, db.or_(Event.recurrence == 0,
+                                type_condition, Event.visibility != 0, db.or_(Event.recurrence == 0,
                                 Event.recurrence == None), text_condition)).paginate(page=page, per_page=count)
     events_dict = []
     for event in events.items:
@@ -93,7 +93,7 @@ def get_event_by_slug(slug: str) -> dict:
 
 def get_events_by_day(day: date) -> list:
     logging.debug("Getting events for day {}".format(day))
-    events = Event.query.filter(db.and_(Event.event_status != 0,
+    events = Event.query.filter(db.and_(Event.visibility != 0,
                                         func.date(Event.start) <= day,
                                         func.date(Event.end) >= day, db.or_(Event.recurrence == 0,
                                                                             Event.recurrence == None))).all()
