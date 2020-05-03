@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from datetime import datetime
+from regex import fullmatch
 
 from backend.service.event_service import get_event, get_events_by_day, get_events_by_filter, get_event_by_slug
 from flask import abort
@@ -36,7 +37,11 @@ def get_day_events(date: str):
 
 
 def get_filtered_events(page: int, per_page: int, from_datetime: str = "", group_ids: str = "", location_ids: str = "",
-                        categories: str = "", terms: str = ""):
+                        categories: str = "", terms: str = "", text: str = ""):
+    valid_text = fullmatch(r"[\p{L} ]*", text)
+    if valid_text is None:
+        abort(400, "Input search string invalid, only letters and spaces allowed")
+
     group_ids = group_ids.split(",")  # split ids
     group_ids = [int(x) for x in group_ids if x]  # remove empty elements
     location_ids = location_ids.split(",")  # split ids
@@ -54,7 +59,7 @@ def get_filtered_events(page: int, per_page: int, from_datetime: str = "", group
             abort(400, "Incorrect from_datetime")
             return
     events = get_events_by_filter(from_dt=from_dt, page=page, count=per_page, group_ids=group_ids,
-                                  location_ids=location_ids, categories=categories, terms=terms)
+                                  location_ids=location_ids, categories=categories, terms=terms, text=text)
     if not events:
         abort(404, "No events found for selected filter")
     else:

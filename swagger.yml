@@ -98,6 +98,12 @@ paths:
           description: "filter by term slug, multiple separated by ','"
           required: false
           type: "string"
+        - name: "text"
+          in: "query"
+          description: "search for text in title, this only validates for letters and space, search is performed case-
+          and accent-insensitive, that means ä==A"
+          required: false
+          type: "string"
       responses:
         200:
           description: "successful operation"
@@ -106,7 +112,7 @@ paths:
             items:
               $ref: "#/definitions/Event"
         400:
-          description: "Invalid datetime"
+          description: "Invalid input, e.g. datetime or text"
         404:
           description: "No events found for these filters"
   /event/{event_id}:

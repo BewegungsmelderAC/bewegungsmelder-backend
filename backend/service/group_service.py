@@ -37,7 +37,7 @@ def get_group_by_id(group_id: int) -> dict:
 
 
 def get_group_by_slug(slug: str) -> dict:
-    group = Group.query.filter(Group.slug == slug).first()
+    group = Group.query.filter(Group.slug == slug).one_or_none()
     if group is None:
         return {}
     else:

@@ -59,7 +59,8 @@ def event_to_full_dict(event: Event) -> dict:
 
 
 def get_events_by_filter(from_dt: datetime, page: int, count: int, group_ids: list, location_ids: list,
-                         categories: list, terms: list) -> list:
+                         categories: list, terms: list, text: str) -> list:
+    text_condition = Event.name.like("%{}%".format(text)) if text != "" else True
     location_condition = construct_filter_statement(location_ids, Event.location_id)
     group_condition = construct_filter_statement(group_ids, Event.group_id)
     categories_condition = construct_filter_statement(categories, Event.category)
@@ -67,7 +68,7 @@ def get_events_by_filter(from_dt: datetime, page: int, count: int, group_ids: li
     # construct complete filter
     events = Event.query.filter(db.and_(Event.end >= from_dt, group_condition, location_condition, terms_condition,
                                 categories_condition, Event.event_status != 0, db.or_(Event.recurrence == 0,
-                                Event.recurrence == None))).paginate(page=page, per_page=count)
+                                Event.recurrence == None), text_condition)).paginate(page=page, per_page=count)
     events_dict = []
     for event in events.items:
         events_dict.append(event_to_compact_dict(event))
@@ -83,7 +84,7 @@ def get_event(id: int) -> dict:
 
 
 def get_event_by_slug(slug: str) -> dict:
-    event = Event.query.filter(Event.slug == slug).first()
+    event = Event.query.filter(Event.slug == slug).one_or_none()
     if event is None:
         return {}
     data = event_to_full_dict(event)

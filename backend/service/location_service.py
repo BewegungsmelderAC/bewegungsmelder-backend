@@ -27,7 +27,7 @@ def get_location(location_id: int) -> dict:
 
 
 def get_location_by_slug(location_slug: str) -> dict:
-    location = Location.query.filter(Location.slug == location_slug).first()
+    location = Location.query.filter(Location.slug == location_slug).one_or_none()
     if location is None:
         return {}
     else:
