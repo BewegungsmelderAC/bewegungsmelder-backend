@@ -29,7 +29,7 @@ def event_to_compact_dict(event: Event) -> dict:
         "group": group,
         "start": event.start,
         "end": event.end,
-        "category": event.category
+        "type": event.event_type
     }
 
 
