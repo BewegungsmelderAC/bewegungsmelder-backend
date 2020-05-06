@@ -3,7 +3,8 @@
 from datetime import datetime
 from regex import fullmatch
 
-from backend.service.event_service import get_event, get_events_by_day, get_events_by_filter, get_event_by_slug
+from backend.service.event_service import get_event, get_events_by_day, get_events_by_filter, get_event_by_slug, \
+    get_types
 from flask import abort
 
 
@@ -63,3 +64,7 @@ def get_filtered_events(page: int, per_page: int, from_datetime: str = "", group
         abort(404, "No events found for selected filter")
     else:
         return events
+
+
+def get_event_types():
+    return get_types()

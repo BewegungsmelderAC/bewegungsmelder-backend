@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import logging
+import re
 
 from sqlalchemy import func
 
@@ -13,6 +14,7 @@ from datetime import date
 from datetime import datetime
 
 from app_config import db
+from backend.adapter.wordpress.option import Option
 from backend.service.group_service import group_to_compact_dict
 from backend.service.location_service import location_to_compact_dict
 from backend.utility import construct_filter_statement
@@ -102,3 +104,10 @@ def get_events_by_day(day: date) -> list:
     for event in events:
         events_dict.append(event_to_compact_dict(event))
     return events_dict
+
+
+def get_types() -> list:
+    options: Option = Option.query.filter(Option.name=="dbem_placeholders_custom").one()
+    types_string = re.search(r"Veranstaltungsart}{(.*)}", options.value)
+    types = types_string.groups()[0].split("|")
+    return types

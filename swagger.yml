@@ -184,6 +184,23 @@ paths:
           description: "Invalid slug supplied"
         404:
           description: "No terms found"
+  /event/types:
+    get:
+      tags:
+        - "event"
+      summary: "Lists all event types"
+      operationId: "backend.api.event_controller.get_event_types"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "string"
+        400:
+          description: "Invalid slug supplied"
+        404:
+          description: "No terms found"
 
   /group/{group_id}:
     get:
