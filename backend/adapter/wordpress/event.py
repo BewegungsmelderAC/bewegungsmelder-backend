@@ -68,17 +68,25 @@ class Event(db.Model):
                 db.and_(Post.parent == self.recurrence_parent.post_id, Post.type == "attachment")).first()
             if attachment is not None:
                 return attachment.guid
+        else:
+            # this is non-standard behaviour - the website does not show this picture in the event details
+            return self.group.get_avatar()
         return None
 
     def get_thumbnail_image(self):
         attachment: Post = Post.query.filter(db.and_(Post.parent == self.post_id, Post.type == "attachment")).first()
         if attachment is not None:
+            # this is a normal image
             return get_image_thumbnail(attachment.id)
         elif self.recurrence_id != 0 and self.recurrence_parent is not None:
+            # we take the image from the parent
             attachment: Post = Post.query.filter(
                 db.and_(Post.parent == self.recurrence_parent.post_id, Post.type == "attachment")).first()
             if attachment is not None:
                 return get_image_thumbnail(attachment.id)
+        else:
+            # we take the avatar image from the group
+            return self.group.get_avatar()
         return None
 
     def get_all_metadata(self):
