@@ -61,17 +61,25 @@ def event_to_full_dict(event: Event) -> dict:
 
 
 def get_events_by_filter(from_dt: datetime, page: int, count: int, group_slugs: list, location_slugs: list,
-                         event_types: list, terms: list, text: str) -> list:
+                         event_types: list, terms: list, text: str, backwards: bool) -> list:
     text_condition = Event.name.like("%{}%".format(text)) if text != "" else True
     location_condition = construct_filter_statement(location_slugs, Event.location_slug)
     group_condition = construct_filter_statement(group_slugs, Event.group_slug)
     type_condition = construct_filter_statement(event_types, Event.event_type)
     terms_condition = construct_filter_statement(terms, Event.terms_slugs)
     # construct complete filter
-    events = Event.query.filter(db.and_(Event.end >= from_dt, group_condition, location_condition, terms_condition,
-                                type_condition, Event.visibility != 0, db.or_(Event.recurrence == 0,
-                                Event.recurrence == None), text_condition))\
-        .order_by(Event.start.asc()).paginate(page=page, per_page=count)
+    if backwards:
+        events = Event.query.filter(Event.end < from_dt, group_condition, location_condition, terms_condition,
+                                    type_condition, Event.visibility != 0, db.or_(Event.recurrence == 0,
+                                                                                  Event.recurrence == None),
+                                    text_condition) \
+            .order_by(Event.start.desc()).paginate(page=page, per_page=count)
+    else:
+        events = Event.query.filter(Event.end >= from_dt, group_condition, location_condition, terms_condition,
+                                    type_condition, Event.visibility != 0, db.or_(Event.recurrence == 0,
+                                                                                  Event.recurrence == None),
+                                    text_condition) \
+            .order_by(Event.start.asc()).paginate(page=page, per_page=count)
     events_dict = []
     for event in events.items:
         events_dict.append(event_to_compact_dict(event))
@@ -99,7 +107,7 @@ def get_events_by_day(day: date) -> list:
     events = Event.query.filter(db.and_(Event.visibility != 0,
                                         func.date(Event.start) <= day,
                                         func.date(Event.end) >= day, db.or_(Event.recurrence == 0,
-                                                                            Event.recurrence == None)))\
+                                                                            Event.recurrence == None))) \
         .order_by(Event.start.asc()).all()
     logging.debug("Retrieved {} events".format(len(events)))
     events_dict = []
@@ -109,7 +117,7 @@ def get_events_by_day(day: date) -> list:
 
 
 def get_types() -> list:
-    options: Option = Option.query.filter(Option.name=="dbem_placeholders_custom").one()
+    options: Option = Option.query.filter(Option.name == "dbem_placeholders_custom").one()
     types_string = re.search(r"Veranstaltungsart}{(.*)}", options.value)
     types = types_string.groups()[0].split("|")
     return types

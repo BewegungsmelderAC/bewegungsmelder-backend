@@ -104,6 +104,12 @@ paths:
           and accent-insensitive, that means ä==A"
           required: false
           type: "string"
+        - name: "backwards"
+          in: "query"
+          type: "boolean"
+          default: false
+          required: false
+          description: "if true, results will have finished before 'from_datetime' and will be ordered from newest to oldest"
       responses:
         200:
           description: "successful operation"

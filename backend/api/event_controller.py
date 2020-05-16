@@ -38,7 +38,7 @@ def get_day_events(date: str):
 
 
 def get_filtered_events(page: int, per_page: int, from_datetime: str = "", group_slugs: str = "", location_slugs: str = "",
-                        types: str = "", terms: str = "", text: str = ""):
+                        types: str = "", terms: str = "", text: str = "", backwards: bool = False):
     valid_text = fullmatch(r"[\p{L} ]*", text)
     if valid_text is None:
         abort(400, "Input search string invalid, only letters and spaces allowed")
@@ -59,7 +59,7 @@ def get_filtered_events(page: int, per_page: int, from_datetime: str = "", group
             abort(400, "Incorrect from_datetime")
             return
     events = get_events_by_filter(from_dt=from_dt, page=page, count=per_page, group_slugs=group_slugs,
-                                  location_slugs=location_slugs, event_types=event_types, terms=terms, text=text)
+                                  location_slugs=location_slugs, event_types=event_types, terms=terms, text=text, backwards=backwards)
     if not events:
         abort(404, "No events found for selected filter")
     else:
