@@ -47,7 +47,8 @@ def get_group_by_slug(slug: str) -> dict:
 def get_groups_by_filter(page: int, count: int, terms: list, text: str) -> list:
     terms_condition = construct_filter_statement(terms, Group.terms_slugs)
     text_condition = Group.name.like("%{}%".format(text)) if text != "" else True
-    groups = Group.query.filter(terms_condition, text_condition).paginate(page=page, per_page=count)
+    groups = Group.query.filter(terms_condition, text_condition)\
+        .order_by(Group.name.asc()).paginate(page=page, per_page=count)
     groups_dict = []
     for group in groups.items:
         groups_dict.append(group_to_compact_dict(group))

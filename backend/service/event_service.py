@@ -70,7 +70,8 @@ def get_events_by_filter(from_dt: datetime, page: int, count: int, group_slugs: 
     # construct complete filter
     events = Event.query.filter(db.and_(Event.end >= from_dt, group_condition, location_condition, terms_condition,
                                 type_condition, Event.visibility != 0, db.or_(Event.recurrence == 0,
-                                Event.recurrence == None), text_condition)).paginate(page=page, per_page=count)
+                                Event.recurrence == None), text_condition))\
+        .order_by(Event.start.asc()).paginate(page=page, per_page=count)
     events_dict = []
     for event in events.items:
         events_dict.append(event_to_compact_dict(event))
@@ -98,7 +99,8 @@ def get_events_by_day(day: date) -> list:
     events = Event.query.filter(db.and_(Event.visibility != 0,
                                         func.date(Event.start) <= day,
                                         func.date(Event.end) >= day, db.or_(Event.recurrence == 0,
-                                                                            Event.recurrence == None))).all()
+                                                                            Event.recurrence == None)))\
+        .order_by(Event.start.asc()).all()
     logging.debug("Retrieved {} events".format(len(events)))
     events_dict = []
     for event in events:
