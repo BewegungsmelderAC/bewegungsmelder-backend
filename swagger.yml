@@ -151,6 +151,7 @@ paths:
           description: "slug of event to return"
           required: true
           type: "string"
+          pattern: '^[0-9a-z-]+$'
       responses:
         200:
           description: "successful operation"
@@ -197,8 +198,6 @@ paths:
             type: "array"
             items:
               type: "string"
-        400:
-          description: "Invalid slug supplied"
         404:
           description: "No terms found"
 
@@ -238,6 +237,7 @@ paths:
           description: "Slug of group to return"
           required: true
           type: "string"
+          pattern: '^[0-9a-z-]+$'
       responses:
         200:
           description: "successful operation"
@@ -275,6 +275,7 @@ paths:
           description: "filter by term slug, multiple separated by ','"
           required: false
           type: "string"
+          pattern: '^[0-9a-z,-]+$'
         - name: "text"
           in: "query"
           description: "search for text in title, this only validates for letters and space, search is performed case-
@@ -353,6 +354,7 @@ paths:
           description: "slug of location to return"
           required: true
           type: "string"
+          pattern: '^[0-9a-z-]+$'
       responses:
         200:
           description: "successful operation"
