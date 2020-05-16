@@ -76,18 +76,18 @@ paths:
           format: "int32"
           minimum: 1
           default: 20
-        - name: "group_slugs"
+        - name: "group_ids"
           in: "query"
-          description: "filter by group slugs, multiple separated by ','"
+          description: "filter by group id, multiple separated by ','"
           required: false
           type: "string"
-          pattern: '^[0-9a-z,-]+$'
-        - name: "location_slugs"
+          pattern: '^[0-9,]+$'
+        - name: "location_ids"
           in: "query"
-          description: "filter by location slug, multiple separated by ','"
+          description: "filter by location id, multiple separated by ','"
           required: false
           type: "string"
-          pattern: '^[0-9a-z,-]+$'
+          pattern: '^[0-9,]+$'
         - name: "types"
           in: "query"
           description: "filter by event type, multiple separated by ';'"
@@ -449,6 +449,8 @@ definitions:
         type: "string"
       name:
         type: "string"
+      id:
+        type: "integer"
     xml:
       name: "Group"
   FullGroup:

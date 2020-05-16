@@ -25,7 +25,7 @@ def group_to_full_dict(group: Group) -> dict:
 
 
 def group_to_compact_dict(group: Group) -> dict:
-    return {"name": group.name, "slug": group.slug}
+    return {"name": group.name, "slug": group.slug, "id": group.id}
 
 
 def get_group_by_id(group_id: int) -> dict:

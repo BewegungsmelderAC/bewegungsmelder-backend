@@ -37,15 +37,15 @@ def get_day_events(date: str):
             return events
 
 
-def get_filtered_events(page: int, per_page: int, from_datetime: str = "", group_slugs: str = "", location_slugs: str = "",
+def get_filtered_events(page: int, per_page: int, from_datetime: str = "", group_ids: str = "", location_ids: str = "",
                         types: str = "", terms: str = "", text: str = "", backwards: bool = False):
     valid_text = fullmatch(r"[\p{L} ]*", text)
     if valid_text is None:
         abort(400, "Input search string invalid, only letters and spaces allowed")
-    group_slugs = group_slugs.split(",")  # split ids
-    group_slugs = [x for x in group_slugs if x]  # remove empty elements
-    location_slugs = location_slugs.split(",")  # split ids
-    location_slugs = [x for x in location_slugs if x]  # remove empty elements
+    group_ids = group_ids.split(",")  # split ids
+    group_ids = [int(x) for x in group_ids if x]  # remove empty elements
+    location_ids = location_ids.split(",")  # split ids
+    location_ids = [int(x) for x in location_ids if x]  # remove empty elements
     event_types = types.split(";")  # split ids
     event_types = [x for x in event_types if x]  # remove empty elements
     terms = terms.split(",")  # split ids
@@ -58,8 +58,8 @@ def get_filtered_events(page: int, per_page: int, from_datetime: str = "", group
         except ValueError:
             abort(400, "Incorrect from_datetime")
             return
-    events = get_events_by_filter(from_dt=from_dt, page=page, count=per_page, group_slugs=group_slugs,
-                                  location_slugs=location_slugs, event_types=event_types, terms=terms, text=text, backwards=backwards)
+    events = get_events_by_filter(from_dt=from_dt, page=page, count=per_page, group_ids=group_ids,
+                                  location_ids=location_ids, event_types=event_types, terms=terms, text=text, backwards=backwards)
     if not events:
         abort(404, "No events found for selected filter")
     else:
