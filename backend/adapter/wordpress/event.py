@@ -58,11 +58,16 @@ class Event(db.Model):
     website = ""
     terms = db.relationship("Term", secondary=association_table, viewonly=True)
     terms_slugs = association_proxy('terms', 'slug')
+    image_attachment_entry = db.relationship("Post", primaryjoin="and_(Event.post_id == Post.id, "
+                                                                 "Post.type=='attachment')", foreign_keys=post_id,
+                                             viewonly=True)
+    image_attachment_meta = db.relationship("Metadata",
+                                            primaryjoin="and_(image_attachment_entry.id == Metadata.post_id,"
+                                                        "   Metadata.meta_key == '_wp_attachment_metadata')")
 
     def get_full_image(self):
-        attachment: Post = Post.query.filter(db.and_(Post.parent == self.post_id, Post.type == "attachment")).first()
-        if attachment is not None:
-            return attachment.guid
+        if self.image_attachment_entry is not None:
+            return self.image_attachment_entry.guid
         elif self.recurrence_id != 0 and self.recurrence_parent is not None:
             attachment: Post = Post.query.filter(
                 db.and_(Post.parent == self.recurrence_parent.post_id, Post.type == "attachment")).first()
@@ -71,9 +76,8 @@ class Event(db.Model):
         return None
 
     def get_thumbnail_image(self):
-        attachment: Post = Post.query.filter(db.and_(Post.parent == self.post_id, Post.type == "attachment")).first()
-        if attachment is not None:
-            return get_image_thumbnail(attachment.id)
+        if self.image_attachment_entry is not None:
+            return get_image_thumbnail(self.image_attachment_entry)
         elif self.recurrence_id != 0 and self.recurrence_parent is not None:
             attachment: Post = Post.query.filter(
                 db.and_(Post.parent == self.recurrence_parent.post_id, Post.type == "attachment")).first()
