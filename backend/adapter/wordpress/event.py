@@ -37,10 +37,12 @@ class Event(db.Model):
     location_id = db.Column('location_id', db.Integer, db.ForeignKey('wp_em_locations.location_id'))
     location = db.relationship("Location", primaryjoin="Event.location_id == Location.id", foreign_keys=location_id,
                                viewonly=True)
+    location_slug = association_proxy('location', 'slug')
     # because location_id is not a ForeignKey, we need primaryjoin
     group_id = db.Column('group_id', db.Integer, db.ForeignKey('wp_bp_groups.id'))
     group = db.relationship("Group", primaryjoin="Event.group_id == Group.id", foreign_keys=group_id,
                             viewonly=True)
+    group_slug = association_proxy('group', 'slug')
     event_type_item = db.relationship("Metadata", primaryjoin="and_(Event.post_id == Metadata.post_id, "
                                                               "Metadata.meta_key=='Veranstaltungsart')",
                                       foreign_keys=post_id,

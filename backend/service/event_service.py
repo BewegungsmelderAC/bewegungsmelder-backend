@@ -60,11 +60,11 @@ def event_to_full_dict(event: Event) -> dict:
     }
 
 
-def get_events_by_filter(from_dt: datetime, page: int, count: int, group_ids: list, location_ids: list,
+def get_events_by_filter(from_dt: datetime, page: int, count: int, group_slugs: list, location_slugs: list,
                          event_types: list, terms: list, text: str) -> list:
     text_condition = Event.name.like("%{}%".format(text)) if text != "" else True
-    location_condition = construct_filter_statement(location_ids, Event.location_id)
-    group_condition = construct_filter_statement(group_ids, Event.group_id)
+    location_condition = construct_filter_statement(location_slugs, Event.location_slug)
+    group_condition = construct_filter_statement(group_slugs, Event.group_slug)
     type_condition = construct_filter_statement(event_types, Event.event_type)
     terms_condition = construct_filter_statement(terms, Event.terms_slugs)
     # construct complete filter
