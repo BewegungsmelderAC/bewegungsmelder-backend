@@ -2,15 +2,16 @@
 # -*- coding: utf-8 -*-
 
 from backend.adapter.wordpress.location import Location
+from backend.utility import unescape_db_to_plain
 
 
 def location_to_compact_dict(location: Location) -> dict:
-    return {"name": location.name,
+    return {"name": unescape_db_to_plain(location.name),
             "slug": location.slug}
 
 
 def location_to_full_dict(location: Location) -> dict:
-    return {"name": location.name,
+    return {"name": unescape_db_to_plain(location.name),
             "id": location.id,
             "town": location.town,
             "address": location.address,

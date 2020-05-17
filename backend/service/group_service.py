@@ -4,12 +4,12 @@
 from backend.adapter.wordpress.location import Location
 from backend.adapter.wordpress.group import Group
 from backend.adapter.wordpress.event import Event
-from backend.utility import construct_filter_statement
+from backend.utility import construct_filter_statement, unescape_db_to_plain
 
 
 def group_to_full_dict(group: Group) -> dict:
     return {"metadata": group.get_all_metadata(),  # this also populates the fields read from the metadata table
-            "name": group.name,
+            "name": unescape_db_to_plain(group.name),
             "id": group.id,
             "description": group.description,
             "slug": group.slug,
@@ -25,7 +25,7 @@ def group_to_full_dict(group: Group) -> dict:
 
 
 def group_to_compact_dict(group: Group) -> dict:
-    return {"name": group.name, "slug": group.slug, "id": group.id}
+    return {"name": unescape_db_to_plain(group.name), "slug": group.slug, "id": group.id}
 
 
 def get_group_by_id(group_id: int) -> dict:

@@ -17,14 +17,14 @@ from app_config import db
 from backend.adapter.wordpress.option import Option
 from backend.service.group_service import group_to_compact_dict
 from backend.service.location_service import location_to_compact_dict
-from backend.utility import construct_filter_statement
+from backend.utility import construct_filter_statement, unescape_db_to_plain
 
 
 def event_to_compact_dict(event: Event) -> dict:
     location = location_to_compact_dict(event.location) if event.location is not None else {}
     group = group_to_compact_dict(event.group) if event.group is not None else {}
     return {
-        "name": event.name,
+        "name": unescape_db_to_plain(event.name),
         "slug": event.slug,
         "location": location,
         "group": group,
@@ -41,7 +41,7 @@ def event_to_full_dict(event: Event) -> dict:
     group = group_to_compact_dict(event.group) if event.group is not None else {}
     return {
         "metadata": event.get_all_metadata(),  # this also populates the fields read from the metadata table
-        "name": event.name,
+        "name": unescape_db_to_plain(event.name),
         "id": event.id,
         "location": location,
         "group": group,
