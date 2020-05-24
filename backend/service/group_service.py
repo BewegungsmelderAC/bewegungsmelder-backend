@@ -11,7 +11,7 @@ def group_to_full_dict(group: Group) -> dict:
     return {"metadata": group.get_all_metadata(),  # this also populates the fields read from the metadata table
             "name": unescape_db_to_plain(group.name),
             "id": group.id,
-            "description": group.description,
+            "description": unescape_db_to_plain(group.description),
             "slug": group.slug,
             "created": group.date_created,
             "contact_email": group.contact_email,

@@ -42,7 +42,7 @@ def event_to_full_dict(event: Event) -> dict:
     return {
         "metadata": event.get_all_metadata(),  # this also populates the fields read from the metadata table
         "name": unescape_db_to_plain(event.name),
-        "id": event.id,
+        "id": event.event_id,
         "location": location,
         "group": group,
         "start": event.start,
@@ -95,7 +95,7 @@ def get_event(id: int) -> dict:
 
 
 def get_event_by_slug(slug: str) -> dict:
-    event = Event.query.filter(Event.slug == slug).one_or_none()
+    event = Event.query.filter(Event.slug == slug, Event.visibility != 0).one_or_none()
     if event is None:
         return {}
     data = event_to_full_dict(event)
