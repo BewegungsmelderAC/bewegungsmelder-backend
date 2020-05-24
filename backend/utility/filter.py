@@ -3,6 +3,7 @@
 from app_config import db
 from html import unescape
 
+
 def construct_filter_statement(items: list, col: db.Column):
     condition = False
     if len(items) > 0:

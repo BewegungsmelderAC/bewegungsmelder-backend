@@ -31,7 +31,7 @@ def event_to_compact_dict(event: Event) -> dict:
         "start": event.start,
         "end": event.end,
         "type": event.event_type,
-        "thumbnail": event.get_thumbnail_image()
+        "thumbnail": event.get_full_image()
     }
 
 
