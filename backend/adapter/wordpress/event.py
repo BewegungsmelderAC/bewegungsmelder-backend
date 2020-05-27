@@ -3,7 +3,6 @@
 import re
 
 from sqlalchemy.ext.associationproxy import association_proxy
-from phpserialize import loads
 
 from config import BEWEGUNGSMELDER_BASE
 from .metadata import Metadata
@@ -45,18 +44,17 @@ class Event(db.Model):
     terms_slugs = association_proxy('terms', 'slug')
 
     def get_full_image(self):
-        if "group-avatars" not in self.full_event.image:
+        try:  # remove this try later
             return BEWEGUNGSMELDER_BASE + self.full_event.image
-        else:
-            # this is non-standard behaviour - the website does not show this picture in the event details
-            return self.group.get_avatar()
+        except AttributeError:
+            return "error"
 
     def get_thumbnail_image(self):
-        if "group-avatars" not in self.full_event.image:
+        try: # remove this try later
             thumb = re.sub(r"(\.[a-zA-Z]*$)", r"-150x150\g<1>", self.full_event.image)
             return BEWEGUNGSMELDER_BASE + thumb
-        else:
-            return self.group.get_avatar()
+        except AttributeError:
+            return "error"
 
     def get_all_metadata(self):
         metadata = Metadata.query.filter(Metadata.post_id == self.post_id).all()
