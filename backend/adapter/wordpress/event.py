@@ -51,7 +51,8 @@ class Event(db.Model):
 
     def get_thumbnail_image(self):
         try: # remove this try later
-            thumb = re.sub(r"(\.[a-zA-Z]*$)", r"-150x150\g<1>", self.full_event.image)
+            thumb = re.sub(r"(\.[a-zA-Z]*$)", r"-150x150\g<1>", self.full_event.image) \
+                if "bpthumb" not in self.full_event.image else self.full_event.image
             return BEWEGUNGSMELDER_BASE + thumb
         except AttributeError:
             return "error"
