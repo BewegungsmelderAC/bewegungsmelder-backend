@@ -29,6 +29,8 @@ app.get('/', async (req, res) => {
   LEFT JOIN wp_bp_groups_logo gl ON g.id = gl.group_id
 
   ${WHERE.length ? `WHERE ${WHERE.join(' AND ')}` : ''}
+
+  ORDER BY g.name ASC
   LIMIT $per_page
   OFFSET $offset`, {
     type: QueryTypes.SELECT,

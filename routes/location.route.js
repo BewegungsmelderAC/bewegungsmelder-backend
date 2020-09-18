@@ -20,6 +20,7 @@ app.get('/', async (req, res) => {
   FROM wp_em_locations l
 
   ${WHERE.length ? `WHERE ${WHERE.join(' AND ')}` : ''}
+  ORDER BY l.location_name ASC
   LIMIT $per_page
   OFFSET $offset`, {
     type: QueryTypes.SELECT,
