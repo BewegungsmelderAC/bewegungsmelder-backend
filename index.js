@@ -5,7 +5,7 @@ const bodyParser = require('body-parser')
 const fs = require('fs')
 const path = require('path')
 
-const PORT = process.env.PORT || 8081
+const PORT = process.env.PORT || 8080
 const ROUTEDIR = path.join(__dirname, 'routes')
 const PREFIX = process.env.PREFIX || 'api'
 
