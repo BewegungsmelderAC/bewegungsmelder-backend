@@ -44,7 +44,7 @@ app.get('/', async (req, res) => {
   JSON_OBJECT('name', l.location_name, 'slug', l.location_slug, 'id', l.location_id) AS location,
   JSON_OBJECT(
     'name', g.name, 'slug', g.slug, 'id', g.id,
-    'logo', (CASE WHEN gl.logo_name IS NULL THEN NULL ELSE CONCAT('/wp-content/uploads/group--avatars/', g.id, '/', gl.logo_name) END)
+    'logo', (CASE WHEN gl.logo_name IS NULL THEN NULL ELSE CONCAT('/wp-content/uploads/group-avatars/', g.id, '/', gl.logo_name) END)
   ) AS \`group\`
   FROM wp_em_events e
   LEFT JOIN wp_bp_groups g ON e.group_id = g.id
