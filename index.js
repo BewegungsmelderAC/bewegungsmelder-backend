@@ -18,7 +18,7 @@ app.use(bodyParser.json())
 const routeFiles = fs.readdirSync(ROUTEDIR).filter(f => f.endsWith('.route.js'))
 
 for (const file of routeFiles) {
-  const route = [PREFIX, file.replace('.route.js', '')].filter(f => !!f).join('/')
+  const route = [file.replace('.route.js', '')].filter(f => !!f).join('/')
   const handler = require(path.join(ROUTEDIR, file))
   console.log('register route /%s', route)
   app.use(`/${route}`, handler)
